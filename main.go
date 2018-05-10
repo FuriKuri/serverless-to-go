@@ -2,18 +2,16 @@ package main
 
 import (
 	"fmt"
+	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/api/types/container"
+	"github.com/docker/docker/client"
+	"github.com/gorilla/mux"
+	"golang.org/x/net/context"
 	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
-
-	"github.com/docker/docker/api/types"
-	"github.com/docker/docker/api/types/container"
-	"github.com/docker/docker/client"
-	"golang.org/x/net/context"
-
-	"github.com/gorilla/mux"
 )
 
 func check(e error) {
@@ -33,8 +31,6 @@ func runNodeFn(w http.ResponseWriter, r *http.Request) {
 
 	resp, err := cli.ContainerCreate(ctx, &container.Config{
 		Image: "serverless/" + fn,
-		//Cmd:   []string{"echo", "hello world"},
-		//Tty: true,
 	}, nil, nil, "")
 	if err != nil {
 		panic(err)
