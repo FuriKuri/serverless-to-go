@@ -2,16 +2,17 @@ package main
 
 import (
 	"fmt"
-	"github.com/docker/docker/api/types"
-	"github.com/docker/docker/api/types/container"
-	"github.com/docker/docker/client"
-	"github.com/gorilla/mux"
-	"golang.org/x/net/context"
 	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
+
+	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/api/types/container"
+	"github.com/docker/docker/client"
+	"github.com/gorilla/mux"
+	"golang.org/x/net/context"
 )
 
 func check(e error) {
@@ -73,7 +74,7 @@ func nodeFn(w http.ResponseWriter, r *http.Request) {
 	err = ioutil.WriteFile("/tmp/"+fn+"/Dockerfile", d1, 0644)
 	check(err)
 
-	Tar("/tmp/"+fn, "/tmp/docker.tar")
+	Tar("/tmp/"+fn, "/tmp/"+fn+".tar")
 
 	buildOptions := types.ImageBuildOptions{
 		Tags:           []string{"serverless/" + fn},
@@ -84,7 +85,7 @@ func nodeFn(w http.ResponseWriter, r *http.Request) {
 		PullParent:     true,
 	}
 
-	dockerBuildContext, err := os.Open("/tmp/docker.tar")
+	dockerBuildContext, err := os.Open("/tmp/" + fn + ".tar")
 	defer dockerBuildContext.Close()
 
 	if err != nil {
@@ -100,7 +101,7 @@ func nodeFn(w http.ResponseWriter, r *http.Request) {
 	defer buildResponse.Body.Close()
 	io.Copy(os.Stdout, buildResponse.Body)
 
-	fmt.Fprintf(w, "Hi there, I love %s!", r.URL.Path[1:])
+	fmt.Fprintf(w, "FN Ready")
 }
 
 func main() {
