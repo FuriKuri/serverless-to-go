@@ -21,7 +21,7 @@ func check(e error) {
 	}
 }
 
-func runNodeFn(w http.ResponseWriter, r *http.Request) {
+func callFn(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	fn := vars["fn"]
 	ctx := context.Background()
@@ -112,7 +112,7 @@ func nodeFn(w http.ResponseWriter, r *http.Request) {
 func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/node/{fn}", nodeFn)
-	r.HandleFunc("/call/{fn}", runNodeFn)
+	r.HandleFunc("/call/{fn}", callFn)
 	log.Println("Listen on port 8080...")
 	http.ListenAndServe(":8080", r)
 }
