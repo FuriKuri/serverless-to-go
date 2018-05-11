@@ -101,6 +101,11 @@ func nodeFn(w http.ResponseWriter, r *http.Request) {
 	defer buildResponse.Body.Close()
 	io.Copy(os.Stdout, buildResponse.Body)
 
+	err = os.Remove("/tmp/" + fn + ".tar")
+	check(err)
+	err = os.RemoveAll("/tmp/" + fn)
+	check(err)
+
 	fmt.Fprintf(w, "FN Ready")
 }
 
