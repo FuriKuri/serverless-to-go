@@ -59,7 +59,12 @@ func callFn(w http.ResponseWriter, r *http.Request) {
 	w.Write(body[7:])
 }
 
-func nodeFn(w http.ResponseWriter, r *http.Request) {
+type codeFn struct {
+	filename   string
+	dockerfile string
+}
+
+func createImage(r *http.Request, codeFn codeFn) {
 	vars := mux.Vars(r)
 	fn := vars["fn"]
 	body, err := ioutil.ReadAll(r.Body)
@@ -67,10 +72,10 @@ func nodeFn(w http.ResponseWriter, r *http.Request) {
 
 	os.MkdirAll("/tmp/"+fn, os.ModePerm)
 
-	err = ioutil.WriteFile("/tmp/"+fn+"/index.js", body, 0644)
+	err = ioutil.WriteFile("/tmp/"+fn+"/"+codeFn.filename, body, 0644)
 	check(err)
 
-	d1 := []byte("FROM node:alpine\nWORKDIR /app\nCOPY index.js /app/\nENTRYPOINT [\"node\", \"/app/index.js\"]")
+	d1 := []byte(codeFn.dockerfile)
 	err = ioutil.WriteFile("/tmp/"+fn+"/Dockerfile", d1, 0644)
 	check(err)
 
@@ -105,6 +110,14 @@ func nodeFn(w http.ResponseWriter, r *http.Request) {
 	check(err)
 	err = os.RemoveAll("/tmp/" + fn)
 	check(err)
+
+}
+
+func nodeFn(w http.ResponseWriter, r *http.Request) {
+	createImage(r, codeFn{
+		filename:   "index.js",
+		dockerfile: "FROM node:alpine\nWORKDIR /app\nCOPY index.js /app/\nENTRYPOINT [\"node\", \"/app/index.js\"]",
+	})
 
 	fmt.Fprintf(w, "FN Ready")
 }
