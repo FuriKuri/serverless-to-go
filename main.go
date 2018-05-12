@@ -70,7 +70,7 @@ func nodeFn(w http.ResponseWriter, r *http.Request) {
 	err = ioutil.WriteFile("/tmp/"+fn+"/index.js", body, 0644)
 	check(err)
 
-	d1 := []byte("FROM node:alpine\nWORKDIR /app\nCOPY index.js /app/\nCMD node /app/index.js")
+	d1 := []byte("FROM node:alpine\nWORKDIR /app\nCOPY index.js /app/\nENTRYPOINT [\"node\", \"/app/index.js\"]")
 	err = ioutil.WriteFile("/tmp/"+fn+"/Dockerfile", d1, 0644)
 	check(err)
 
