@@ -122,9 +122,19 @@ func nodeFn(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "FN Ready")
 }
 
+func rubyFn(w http.ResponseWriter, r *http.Request) {
+	createImage(r, codeFn{
+		filename:   "script.rb",
+		dockerfile: "FROM ruby:alpine\nWORKDIR /app\nCOPY script.rb /app/\nENTRYPOINT [\"ruby\", \"/app/script.rb\"]",
+	})
+
+	fmt.Fprintf(w, "FN Ready")
+}
+
 func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/node/{fn}", nodeFn)
+	r.HandleFunc("/ruby/{fn}", rubyFn)
 	r.HandleFunc("/call/{fn}", callFn)
 	log.Println("Listen on port 8080...")
 	http.ListenAndServe(":8080", r)
