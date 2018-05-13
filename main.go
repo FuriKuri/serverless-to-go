@@ -31,7 +31,7 @@ func callFn(w http.ResponseWriter, r *http.Request) {
 	}
 
 	resp, err := cli.ContainerCreate(ctx, &container.Config{
-		Image: "serverless/" + fn,
+		Image: "fn/" + fn,
 	}, nil, nil, "")
 	if err != nil {
 		panic(err)
@@ -82,7 +82,7 @@ func createImage(r *http.Request, codeFn codeFn) {
 	Tar("/tmp/"+fn, "/tmp/"+fn+".tar")
 
 	buildOptions := types.ImageBuildOptions{
-		Tags:           []string{"serverless/" + fn},
+		Tags:           []string{"fn/" + fn},
 		Dockerfile:     "Dockerfile",
 		SuppressOutput: true,
 		Remove:         true,
@@ -100,7 +100,7 @@ func createImage(r *http.Request, codeFn codeFn) {
 	cli, err := client.NewEnvClient()
 	buildResponse, err := cli.ImageBuild(context.Background(), dockerBuildContext, buildOptions)
 	if err != nil {
-		log.Fatalf("buildImage=%s failed:%v", "serverless/"+fn, err)
+		log.Fatalf("buildImage=%s failed:%v", "fn/"+fn, err)
 	}
 
 	defer buildResponse.Body.Close()
@@ -110,7 +110,6 @@ func createImage(r *http.Request, codeFn codeFn) {
 	check(err)
 	err = os.RemoveAll("/tmp/" + fn)
 	check(err)
-
 }
 
 func nodeFn(w http.ResponseWriter, r *http.Request) {
