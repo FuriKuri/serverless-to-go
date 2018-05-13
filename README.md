@@ -10,6 +10,11 @@ $ docker run -p 8080:8080 -v /var/run/docker.sock:/var/run/docker.sock furikuri/
 ```
 
 ### Create function
+
+```
+$ echo "{function-code}"  | http localhost:8080/{language}/{function-name}
+```
+
 *Node JS*
 ```
 $ echo "console.log('Hello World')"  | http localhost:8080/node/hello-node
