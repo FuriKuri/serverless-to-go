@@ -36,3 +36,20 @@ Date: Sat, 13 May 2018 14:21:43 GMT
 
 FN Ready
 ```
+
+### Call function
+
+```
+$ http localhost:8080/call/{function-name}
+```
+
+```
+$ http localhost:8080/call/hello-ruby
+HTTP/1.1 200 OK
+Content-Length: 13
+Content-Type: text/plain; charset=utf-8
+Date: Sat, 13 May 2018 14:21:54 GMT
+
+
+Hello World
+```
