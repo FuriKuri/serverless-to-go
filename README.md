@@ -28,7 +28,7 @@ FN Ready
 
 *Ruby*
 ```
-echo "puts 'Hello World'"  | http localhost:8080/ruby/hello-ruby
+$ echo "puts 'Hello World'"  | http localhost:8080/ruby/hello-ruby
 HTTP/1.1 200 OK
 Content-Length: 8
 Content-Type: text/plain; charset=utf-8
